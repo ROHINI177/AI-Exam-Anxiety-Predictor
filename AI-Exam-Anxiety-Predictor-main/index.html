@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Exam Anxiety Predictor</title>
+
+<style>
+
+body{
+    font-family: Arial;
+    background: linear-gradient(to right,#6dd5ed,#2193b0);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    padding:30px;
+    width:400px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0px 0px 10px rgba(0,0,0,0.2);
+}
+
+textarea{
+    width:100%;
+    height:120px;
+    margin-top:10px;
+    padding:10px;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 20px;
+    background:#2193b0;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#176b82;
+}
+
+.result{
+    margin-top:20px;
+    background:#f2f2f2;
+    padding:10px;
+    border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AI Exam Anxiety Predictor</h1>
+
+<p>Enter your thoughts before the exam:</p>
+
+<textarea id="textInput" placeholder="Type how you feel about your exam..."></textarea>
+
+<br>
+
+<button onclick="predictAnxiety()">Predict Anxiety</button>
+
+<div class="result">
+
+<h3>Prediction:</h3>
+
+<p id="output">Your anxiety level will appear here</p>
+
+</div>
+
+</div>
+
+<script>
+
+async function predictAnxiety(){
+
+    const text = document.getElementById("textInput").value;
+
+    if(text.trim() === ""){
+        document.getElementById("output").innerText="Please enter some text";
+        return;
+    }
+
+    try{
+
+        const response = await fetch("http://127.0.0.1:8000/predict",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify({
+                text: text
+            })
+        });
+
+        const data = await response.json();
+
+        document.getElementById("output").innerText = data.prediction;
+
+    }
+
+    catch(error){
+
+        document.getElementById("output").innerText =
+        "Error connecting to API. Make sure FastAPI server is running.";
+
+        console.error(error);
+    }
+
+}
+
+</script>
+
+</body>
+</html>
